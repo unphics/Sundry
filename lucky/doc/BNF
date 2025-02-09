@@ -1,0 +1,11 @@
+上下位无关文法
+
+Prog        := Expr             程序是由表达式组成的
+Expr        := AddExpr          表达式是由加法组成的
+AddExpr     := MulExpr          加法是由若干个乘法进行相加或相减组成的
+            := AddExpr + MulExpr
+            := AddExpr - MulExpr
+MulExpr     := PrimayExpr        乘法是由基本表达式进行乘法或除法组成的
+            := MulExpr * PrimayExpr
+            := MulExpr / PrimayExpr
+PrimayExpr  := Number            基本表达式是由数字组成的
