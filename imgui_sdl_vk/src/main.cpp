@@ -489,7 +489,17 @@ int main(int, char**)
     bool show_demo_window = true;
     bool show_another_window = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-    ::SDL_HideWindow(window); // zys: 隐藏窗口
+    {
+        // auto fullscreenFlag = SDL_GetWindowFlags(window) & SDL_WINDOW_FULLSCREEN_DESKTOP; // 检查当前是否全屏
+        SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP); // 切换全屏模式
+
+        ::SDL_HideWindow(window); // zys: 隐藏窗口, 此代码需要在后
+    }
+    // 切换全屏模式windows窗口
+    // {
+    //     Uint32 fullscreenFlag = SDL_GetWindowFlags(window) & SDL_WINDOW_FULLSCREEN_DESKTOP; // 检查当前是否全屏
+    //     SDL_SetWindowFullscreen(window, fullscreenFlag ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP); // 切换全屏模式
+    // }
     // Main loop
     bool done = false;
     while (!done)
@@ -529,7 +539,7 @@ int main(int, char**)
         ImGui_ImplVulkan_NewFrame();
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
-
+/*
         // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
         if (show_demo_window)
             ImGui::ShowDemoWindow(&show_demo_window);
@@ -564,6 +574,26 @@ int main(int, char**)
             ImGui::Text("Hello from another window!");
             if (ImGui::Button("Close Me"))
                 show_another_window = false;
+            ImGui::End();
+        }
+*/
+
+        {
+            ImGuiViewport* viewport = ImGui::GetMainViewport();
+            auto work_size = viewport->WorkSize;
+            work_size.y -= 45; // 留出windows任务栏状态栏高度
+            ImGui::SetNextWindowSize(work_size);
+            ImGui::SetNextWindowPos(viewport->WorkPos);
+            // ImGui::SetNextWindowViewport(viewport->ID);
+            ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove
+                | ImGuiWindowFlags_NoDocking;
+            if (ImGui::Begin("this is a title", nullptr, flags)) {
+                ImGui::Text("this is a text");
+                ImGui::SetCursorPos(ImVec2(100, 100));
+                if (ImGui::Button("button test", ImVec2(100, 100))) {
+                    
+                }
+            }
             ImGui::End();
         }
 
