@@ -436,6 +436,7 @@ int main(int, char**)
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows zys: 启动多视口功能
     //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
     //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
+    io.ConfigViewportsNoAutoMerge = true; // zys: 参考评论添加这个, 禁止自动合并视口
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
@@ -488,7 +489,7 @@ int main(int, char**)
     bool show_demo_window = true;
     bool show_another_window = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
+    ::SDL_HideWindow(window); // zys: 隐藏窗口
     // Main loop
     bool done = false;
     while (!done)
