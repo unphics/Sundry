@@ -581,7 +581,7 @@ int main(int, char**)
         {
             ImGuiViewport* viewport = ImGui::GetMainViewport();
             auto work_size = viewport->WorkSize;
-            work_size.y -= 45; // 留出windows任务栏状态栏高度
+            work_size.y -= 40; // 留出windows任务栏状态栏高度
             ImGui::SetNextWindowSize(work_size);
             ImGui::SetNextWindowPos(viewport->WorkPos);
             // ImGui::SetNextWindowViewport(viewport->ID);
