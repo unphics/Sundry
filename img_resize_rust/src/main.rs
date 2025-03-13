@@ -1,7 +1,3 @@
-use image::DynamicImage;
-use image::GenericImageView;
-use image::ImageBuffer;
-use std::path::Path;
 
 fn main() {
     // 遍历resource/source目录下的所有png文件,resize到100x100,保存到resource/target目录下
