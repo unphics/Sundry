@@ -1,75 +1,53 @@
+-- 设置项目名
+set_project("LuaJitStudy")
+-- 设置版本
+set_version("1.0.0")
+-- 允许调试和发布模式
 add_rules("mode.debug", "mode.release")
 
+-- 定义目标
 target("luajit")
-    set_kind("binary")
-    add_files("src/*.cpp")
+    set_kind("binary") -- 编译为可执行程序
 
---
--- If you want to known more usage about xmake, please see https://xmake.io
---
--- ## FAQ
---
--- You can enter the project directory firstly before building project.
---
---   $ cd projectdir
---
--- 1. How to build project?
---
---   $ xmake
---
--- 2. How to configure project?
---
---   $ xmake f -p [macosx|linux|iphoneos ..] -a [x86_64|i386|arm64 ..] -m [debug|release]
---
--- 3. Where is the build output directory?
---
---   The default output directory is `./build` and you can configure the output directory.
---
---   $ xmake f -o outputdir
---   $ xmake
---
--- 4. How to run and debug target after building project?
---
---   $ xmake run [targetname]
---   $ xmake run -d [targetname]
---
--- 5. How to install target to the system directory or other output directory?
---
---   $ xmake install
---   $ xmake install -o installdir
---
--- 6. Add some frequently-used compilation flags in xmake.lua
---
--- @code
---    -- add debug and release modes
---    add_rules("mode.debug", "mode.release")
---
---    -- add macro definition
---    add_defines("NDEBUG", "_GNU_SOURCE=1")
---
---    -- set warning all as error
---    set_warnings("all", "error")
---
---    -- set language: c99, c++11
---    set_languages("c99", "c++11")
---
---    -- set optimization: none, faster, fastest, smallest
---    set_optimize("fastest")
---
---    -- add include search directories
---    add_includedirs("/usr/include", "/usr/local/include")
---
---    -- add link libraries and search directories
---    add_links("tbox")
---    add_linkdirs("/usr/local/lib", "/usr/lib")
---
---    -- add system link libraries
---    add_syslinks("z", "pthread")
---
---    -- add compilation and link flags
---    add_cxflags("-stdnolib", "-fno-strict-aliasing")
---    add_ldflags("-L/usr/local/lib", "-lpthread", {force = true})
---
--- @endcode
---
+    -- 添加头文件包含
+    add_includedirs("libs/LuaJIT-2.1.0-beta3/src")
 
+    -- 添加源文件
+    add_files("src/*.cc")
+
+    -- 宏定义
+    add_defines("USING_LUAJIT=1")
+    add_defines("_CRT_SECURE_NO_WARNINGS")
+
+    -- LuaJIT在Win64下必须开启GC64宏
+    if is_plat("windows") and is_arch("x64") then
+        add_defines("LUAJIT_ENABLE_GC64=1")
+        add_defines("LUA_BUILD_AS_DLL") -- 链接DLL
+    end
+
+    -- 链接库文件
+    add_linkdirs("libs/LuaJIT-2.1.0-beta3/lib-c/Win64/Release")
+    add_links("Lua") -- lua51.lib
+
+    -- 自动把DLL拷贝到运行目录
+    after_build(function(target)
+        import("core.project.task")
+        local dllpath = "libs/LuaJIT-2.1.0-beta3/lib-c/Win64/Release/Lua.dll"
+        if os.exists(dllpath) then
+            os.cp(dllpath, target:targetdir())
+        end
+    end)
+--[[
+    -- 自动化构建
+    before_build(function (target)
+        if is_plat("windows") then
+            -- 如果 lib 不存在，则自动调用脚本
+            if not os.exists("3rd/luajit/src/lua51.lib") then
+                print("Building LuaJIT via script...")
+                os.cd("3rd/luajit/script")
+                os.run("build_win64_jit.bat Release")
+                os.cd("-")
+            end
+        end
+    end)
+--]]
