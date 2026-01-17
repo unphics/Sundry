@@ -41,6 +41,10 @@ function M:ReceiveDestroyed()
 	UE.UKismetSystemLibrary.K2_ClearTimerHandle(self, self.TimerHandle)
 end
 
+function M:ReceiveTick()
+	self:qqq()
+end
+
 function M:UpdateAiming(IsAiming)
 	if self.Weapon then
 		if IsAiming then
