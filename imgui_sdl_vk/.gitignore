@@ -8,4 +8,4 @@ out/imgui_sdl_vk.exe
 
 /bin/*.exe
 
-# /.vscode/
+/.vscode/
