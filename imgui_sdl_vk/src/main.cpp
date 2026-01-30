@@ -14,8 +14,8 @@
 // Read comments in imgui_impl_vulkan.h.
 
 #include "imgui.h"
-#include "imgui_impl_sdl2.h"
-#include "imgui_impl_vulkan.h"
+#include "sdl2/imgui_impl_sdl2.h"
+#include "vulkan/imgui_impl_vulkan.h"
 #include <stdio.h>          // printf, fprintf
 #include <stdlib.h>         // abort
 #define SDL_MAIN_HANDLED

@@ -25,6 +25,7 @@ target("imgui_sdl_vk")
     add_files("imgui/*.cpp")
     -- 项目源码
     add_includedirs("src")
-    add_files("src/*.cpp")
+    add_includedirs("src/public")
+    add_files("src/**.cpp")
     -- 如果imgui需要sdl和vulkan的backend实现文件
 target_end()
