@@ -2,7 +2,7 @@ add_rules("mode.debug", "mode.release")
 
 -- 1. 依赖包管理
 if is_plat("android") then
-    add_require("libsdl2")
+    add_requires("libsdl2")
 else
     -- windows
     add_requires("vulkansdk", {system=true })
@@ -56,3 +56,6 @@ target("imgui_sdl_vk")
         add_defines("SDL_MAIN_HANDLED")
     end
 target_end()
+
+-- xmake f -p android --ndk="C:\Users\zys\AppData\Local\Android\Sdk\ndk\25.1.8937393" -a arm64-v8a --ndk_sdkver=24 -c
+-- xmake

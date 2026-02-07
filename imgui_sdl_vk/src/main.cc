@@ -3,7 +3,7 @@
 #define main_cc
 
 // 防止sdl自动劫持main函数
-#define SDL_MAIN_HANDLED
+// #define SDL_MAIN_HANDLED
 
 #include "imgui.h"
 #include "sdl2/imgui_impl_sdl2.h"
