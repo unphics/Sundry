@@ -1,61 +1,50 @@
+-- xmake.lua
+
+-- 1. 基础配置
 add_rules("mode.debug", "mode.release")
 
--- 1. 依赖包管理
-if is_plat("android") then
-    add_requires("libsdl2")
-else
-    -- windows
-    add_requires("vulkansdk", {system=true })
-    add_requires("libsdl2")
+-- 2. 依赖管理
+add_requires("libsdl2")
+
+-- 【关键】Android 平台不需要 vulkansdk 包，直接用系统库
+if not is_plat("android") then
+    add_requires("vulkansdk")
 end
 
-
 target("imgui_sdl_vk")
-    -- 2. 根据平台设置生成的类型
+    -- 设定目标类型
     if is_plat("android") then
         set_kind("shared")
+        set_basename("main") -- 必须叫 libmain.so
     else
         set_kind("binary")
-        set_targetdir('bin')
     end
 
-    -- 3. 应用依赖包
-    add_packages("vulkansdk", "libsdl2")
+    -- 应用依赖
+    add_packages("libsdl2")
+    if not is_plat("android") then
+        add_packages("vulkansdk")
+    end
 
-    -- 4. 自动处理sdl2路径
-    -- 因为 ImGui 代码里通常写的是 #include <SDL.h> 
-    -- 而包管理器下载的路径可能是 include/SDL2/SDL.h
-    after_load(function (target)
-        local sdl2 = target:pkg("libsdl2")
-        if sdl2 then
-            local incdirs = sdl2:get("includedirs")
-            for _, dir in ipairs(incdirs) do
-                -- 自动把 .../include/SDL2 也加入搜索路径
-                target:add("includedirs", path.join(dir, "SDL2"))
-            end
-        end
-    end)
-
-    -- 5.头文件路径
-    add_includedirs("imgui")
-    add_includedirs("src")
-    add_includedirs("src/public")
-
-    -- 6.源文件路径
+    -- 头文件路径
+    add_includedirs("imgui", "src", "src/public")
+    
+    -- 源文件
     add_files("imgui/*.cpp")
-    add_files("src/**.cpp")
-    add_files("src/**.cc")
-    -- 如果imgui需要sdl和vulkan的backend实现文件
+    add_files("src/private/sdl2/*.cpp")
+    add_files("src/private/vulkan/*.cpp")
+    add_files("src/main.cpp") 
 
-    -- 7. 安卓平台特有的系统库链接和配置
+    -- 【核心修复】Android 链接配置
     if is_plat("android") then
-        -- log: 打印日志到Logcat; android: 安卓核心库; vulkan: 核心渲染库
-        add_links("android", "log", "vulkan")
+        -- 1. 强制设置 API 版本 (作为双重保险)
+        set_config("ndk_sdkver", "24")
 
-        -- 解决NDK入口函数问题
-        add_defines("SDL_MAIN_HANDLED")
+        -- 2. 链接 Android 系统库
+        -- 注意：不要在这里写 linkdirs，让 xmake 根据 ndk_sdkver 自动推导
+        add_syslinks("android", "log", "vulkan", "EGL", "GLESv2")
+        
+        -- 3. 允许未定义符号 (解决 SDL2 的 JNI 入口问题)
+        add_ldflags("-Wl,--allow-shlib-undefined")
     end
 target_end()
-
--- xmake f -p android --ndk="C:\Users\zys\AppData\Local\Android\Sdk\ndk\25.1.8937393" -a arm64-v8a --ndk_sdkver=24 -c
--- xmake

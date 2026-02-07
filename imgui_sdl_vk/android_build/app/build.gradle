@@ -40,6 +40,7 @@ android {
     externalNativeBuild {
         xmake {
             path "../../xmake.lua"
+            arguments = ["--ndk_sdkver=24"]
         }
     }
 
