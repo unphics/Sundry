@@ -2,6 +2,7 @@
 ```
 imgui_sdl_vk/
 ├── bin/                    # 可执行文件及其配置存放目录
+|   android_build           # 拷贝自SDL源码的android模板proj
 ├── doc/                    # 文档
 ├── imgui/                  # dear_imgui源码
 ├── lib/                    # 存放sdl2/vulkan等库

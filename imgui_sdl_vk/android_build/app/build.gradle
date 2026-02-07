@@ -4,6 +4,7 @@ plugins {
 }
 
 android {
+    // 基础配置
     namespace = "org.libsdl.app"
     compileSdk 35
 
@@ -15,48 +16,43 @@ android {
         versionName "1.0"
 
         ndk {
-            // 关键：指定架构
+            // 只编译 arm64 架构
             abiFilters 'arm64-v8a'
         }
     }
 
+    // 编译类型
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
+    // 资源路径配置
     sourceSets.main {
-        // 如果你有预编译的库放在 libs 下，保留这行；否则可以删掉
+        // 确保你的图片在这个目录下：android/app/src/main/assets
+        assets.srcDirs = ['src/main/assets']
+        // 这里的 libs 目录如果不存在也没关系
         jniLibs.srcDir 'libs'
     }
 
+    // 核心：连接 xmake
     externalNativeBuild {
         xmake {
             path "../../xmake.lua"
         }
     }
 
+    // 忽略一些不重要的错误
     lint {
-        abortOnError = false
+        abortOnError false
     }
 }
 
 dependencies {
+    // 保持最简单的依赖
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 }
 
-// 补丁：处理可能的任务依赖残留
-tasks.whenTaskAdded { task ->
-    if (task.name == 'mergeDebugAssets' || task.name == 'mergeReleaseAssets') {
-        // 尝试让它依赖 xmake 的任务，而不是那个不存在的旧任务
-        try {
-            task.dependsOn "externalNativeBuildXmake${task.name.contains('Debug') ? 'Debug' : 'Release'}"
-        } catch (Exception e) {
-            // 如果找不到 xmake 任务，创建一个空的占位符防止报错
-            def dummyName = task.name.contains('Debug') ? 'externalNativeBuildDebug' : 'externalNativeBuildRelease'
-            task.dependsOn tasks.maybeCreate(dummyName)
-        }
-    }
-}
+// 注意：这里没有任何 tasks.whenTaskAdded，没有任何 dependsOn！
+// 我们让 xmake 插件和 Android Gradle Plugin 自己去对接。
