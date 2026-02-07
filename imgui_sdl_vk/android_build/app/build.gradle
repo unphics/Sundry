@@ -1,6 +1,6 @@
 plugins {
     id 'com.android.application'
-    id 'org.thoox.gradle-xmake-plugin' version '1.1.5' // 引入xmake插件
+    id 'org.tboox.gradle-xmake-plugin' version '1.1.5' // 引入xmake插件
 }
 
 def buildWithCMake = project.hasProperty('BUILD_WITH_CMAKE');
