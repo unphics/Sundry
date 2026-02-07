@@ -27,6 +27,10 @@ android {
                 abiFilters 'arm64-v8a'
             }
         }
+        ndk {
+            // 告诉安卓只打 arm64 架构的包（对应你的 S24 Ultra）
+            abiFilters 'arm64-v8a'
+        }
     }
     buildTypes {
         release {
