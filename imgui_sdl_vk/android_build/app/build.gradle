@@ -59,3 +59,8 @@ dependencies {
 
 // 注意：这里没有任何 tasks.whenTaskAdded，没有任何 dependsOn！
 // 我们让 xmake 插件和 Android Gradle Plugin 自己去对接。
+tasks.whenTaskAdded { task ->
+    if (task.name.contains("xmakeInstall")) {
+        task.enabled = false
+    }
+}
