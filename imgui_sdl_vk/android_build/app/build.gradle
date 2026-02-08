@@ -33,7 +33,7 @@ android {
         // 确保你的图片在这个目录下：android/app/src/main/assets
         assets.srcDirs = ['src/main/assets']
         // 这里的 libs 目录如果不存在也没关系
-        jniLibs.srcDir 'libs'
+        // jniLibs.srcDirs = ['build/xmake/android/arm64-v8a/release']
     }
 
     // 核心：连接 xmake
@@ -60,7 +60,7 @@ dependencies {
 // 注意：这里没有任何 tasks.whenTaskAdded，没有任何 dependsOn！
 // 我们让 xmake 插件和 Android Gradle Plugin 自己去对接。
 tasks.whenTaskAdded { task ->
-    if (task.name.contains("xmakeInstall")) {
+    if (task.name.contains("xmakeInstall") || task.name.contains("xmakeClean")) {
         task.enabled = false
     }
 }

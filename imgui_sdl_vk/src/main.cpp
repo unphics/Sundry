@@ -12,7 +12,7 @@
 // - Helper ImGui_ImplVulkanH_XXX functions and structures are only used by this example (main.cpp) and by
 //   the backend itself (imgui_impl_vulkan.cpp), but should PROBABLY NOT be used by your own engine/app code.
 // Read comments in imgui_impl_vulkan.h.
-
+#include <vulkan/volk.h>
 #include "imgui.h"
 #include "sdl2/imgui_impl_sdl2.h"
 #include "vulkan/imgui_impl_vulkan.h"
@@ -26,7 +26,7 @@
 // Volk headers
 #ifdef IMGUI_IMPL_VULKAN_USE_VOLK
 #define VOLK_IMPLEMENTATION
-#include <volk.h>
+#include <vulkan/volk.h>
 #endif
 
 //#define APP_USE_UNLIMITED_FRAME_RATE
