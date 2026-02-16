@@ -7,13 +7,10 @@ if is_plat("android") then
     set_toolchains("ndk", {sdkver = "21"})
 end
 
-add_requires("raylib-cpp 5.5.0")
-
 target("cppray")
     set_kind("binary")
     set_languages("c++17")
     add_files("src/*.cpp") 
-    add_packages("raylib-cpp")
     
     if is_plat("android") then
         add_rules("android.native_app", {
@@ -23,7 +20,7 @@ target("cppray")
             android_assets = "assets",
             keystore = "android/debug.jks",
             keystore_pass = "123456",
-            package_name = "com.game.raygame",
+            package_name = "com.zys.river",
         })
     end
  
