@@ -2,15 +2,17 @@ set_xmakever("3.0.6")
 
 add_rules("mode.debug", "mode.release")
 
-
 if is_plat("android") then
     set_toolchains("ndk", {sdkver = "21"})
 end
+add_defines("ANDROID")
+add_requires("libsdl2")
 
-target("cppray")
+target("River")
     set_kind("binary")
     set_languages("c++17")
-    add_files("src/*.cpp") 
+    add_files("src/*.cpp")
+    add_packages("libsdl2")
     
     if is_plat("android") then
         add_rules("android.native_app", {
